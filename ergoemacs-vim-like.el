@@ -50,7 +50,25 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-(require 'ergoemacs-mode)
+;;(require 'ergoemacs-mode)
+
+
+;; Viper/Evil compatability layers for ex emulation.
+(require 'viper nil t)
+(require 'evil nil t)
+
+(defun ergoemacs-vim-append (&optonal arg)
+  "Call end-of-line then append."
+  (interactive "P")
+  (call-interactively 'move-end-of-line)
+  (ergoemacs-toggle-full-alt))
+
+(defun ergoemacs-vim-replace ()
+  "Enter into ergoemacs-vim relpace mode."
+  (interactive)
+  (ergoemacs-toggle-full-alt)
+  (overwrite-mode 1))
+
 (ergoemacs-deftheme vim-like
   "Keys similar to Vim"
   nil
@@ -60,17 +78,31 @@
   (ergoemacs-key "M-j" 'next-line "↓ line")
   (ergoemacs-key "M-k" 'previous-line "↑ line")
   (ergoemacs-key "M-l" 'forward-char "→ char")
-  (ergoemacs-key "M-i" ' ergoemacs-toggle-full-alt "Alt+")
+
+  ;; Entering Editing mode
+  (ergoemacs-key "M-i" 'ergoemacs-toggle-full-alt "Alt+")
+  (ergoemacs-key "M-A" 'ergoemacs-vim-append "Append")
+  (ergoemacs-key "M-R" 'ergoemacs-vim-replace "Overwrite")
   
   (ergoemacs-key "M-u" 'undo "Undo")
-  (ergoemacs-key "M-w" 'right-word "→ word")
-  ;; (ergoemacs-key "M-e")  End word...?
-  (ergoemacs-key "M-b" 'left-word "← word") ;; prev word
+  ;; C-R is redo...
   (ergoemacs-key "M-X" 'delete-backward-char "⌫ char")
   (ergoemacs-key "M-x" 'delete-char "⌦ char")
   (ergoemacs-key "M-$" 'ergoemacs-end-of-line-or-what "→ line/*")
   (ergoemacs-key "M-^" 'ergoemacs-beginning-of-line-or-what "← line/*")
   (ergoemacs-key "M-0" 'beginning-of-line "← line")
+
+  ;; word and WORD....
+  (ergoemacs-key "M-w" 'right-word "→ word")
+  ;; (ergoemacs-key "M-e")  End word...?
+  (ergoemacs-key "M-b" 'left-word "← word") ;; prev word
+
+  (ergoemacs-key "M-:" '(evil-ex viper-ex) ":") ;; Use evil
+  (ergoemacs-key "M-/" '(evil-search-forward
+                         viper-search-forward
+                         isearch-forward) "Search")
+
+  
   ;; Vi Lesson #2.
   (ergoemacs-key "M-v" 'set-mark-command "Set Mark")
   (ergoemacs-key "M-." 'repeat  "Repeat")
@@ -80,7 +112,8 @@
   
   (ergoemacs-key "M-d M-h" 'delete-backward-char "⌫ char")
   (ergoemacs-key "M-d M-l" 'delete-char "⌦ char")
-  )
+  (ergoemacs-key "M-~" 'ergoemacs-toggle-case "Case")
+  (ergoemacs-key "M-<escape>" ergoemacs-toggle-full-alt "Alt+"))
 
 (provide 'ergoemacs-vim-like)
 
