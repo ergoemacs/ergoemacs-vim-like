@@ -54,6 +54,8 @@
 
 
 ;; Viper/Evil compatability layers for ex emulation.
+;; Use their functions when available???
+
 (require 'viper nil t)
 (require 'evil nil t)
 
@@ -69,9 +71,16 @@
   (ergoemacs-toggle-full-alt)
   (overwrite-mode 1))
 
+(ergoemacs-theme-component vim-movement ()
+  "Vim movement commands."
+  (global-set-key (kbd "M-h") 'backward-char)
+  (global-set-key (kbd "M-j") 'next-char)
+  (global-set-key (kbd "M-k") 'previous-line)
+  (global-set-key (kbd "M-l") 'forward-char))
+
 (ergoemacs-deftheme vim-like
   "Keys similar to Vim"
-  nil
+  nil 
   ;; Vi Lesson #1.
   ;; http://www.viemu.com/a_vi_vim_graphical_cheat_sheet_tutorial.HTML
   (ergoemacs-key "M-h" 'backward-char "← char")
@@ -98,9 +107,7 @@
   (ergoemacs-key "M-b" 'left-word "← word") ;; prev word
 
   (ergoemacs-key "M-:" '(evil-ex viper-ex) ":") ;; Use evil
-  (ergoemacs-key "M-/" '(evil-search-forward
-                         viper-search-forward
-                         isearch-forward) "Search")
+  (ergoemacs-key "M-/" '(isearch-forward) "Search")
 
   
   ;; Vi Lesson #2.
@@ -113,7 +120,8 @@
   (ergoemacs-key "M-d M-h" 'delete-backward-char "⌫ char")
   (ergoemacs-key "M-d M-l" 'delete-char "⌦ char")
   (ergoemacs-key "M-~" 'ergoemacs-toggle-case "Case")
-  (ergoemacs-key "M-<escape>" ergoemacs-toggle-full-alt "Alt+"))
+  
+  (ergoemacs-key "M-<escape>" 'ergoemacs-toggle-full-alt "Alt+"))
 
 (provide 'ergoemacs-vim-like)
 
